@@ -3,84 +3,7 @@
 #include <QtCore/qrandom.h>
 #include <QtCore/qstate.h>
 
-class Pixmap : public QObject, public QGraphicsPixmapItem
-{
-    Q_OBJECT
-    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
-public:
-    Pixmap(const QPixmap &pix)
-        : QObject(), QGraphicsPixmapItem(pix)
-    {
-        setCacheMode(DeviceCoordinateCache);
-    }
-};
-
-class Button : public QGraphicsWidget
-{
-    Q_OBJECT
-public:
-    Button(const QPixmap &pixmap, QGraphicsItem *parent = 0): QGraphicsWidget(parent), _pix(pixmap)
-    {
-        setAcceptHoverEvents(true);
-        setCacheMode(DeviceCoordinateCache);
-    }
-
-    QRectF boundingRect() const override
-    {
-        //Posicao da foto do botao
-        return QRectF(-115, -65, 130, 130);
-    }
-
-    QPainterPath shape() const override
-    {
-        QPainterPath path;
-        path.addRect(boundingRect());
-        return path;
-    }
-
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *) override
-    {
-        bool down = option->state & QStyle::State_Sunken;
-        QRectF r = boundingRect();
-
-        //Tipo de desenho
-        painter->drawRect(r);
-        if (down)
-            painter->translate(2, 2);
-        painter->drawPixmap(-115, -65, 130, 130, _pix);
-    }
-
-signals:
-    void pressed();
-
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *) override
-    {
-        emit pressed();
-        update();
-    }
-
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *) override
-    {
-        update();
-    }
-
-private:
-    QPixmap _pix;
-};
-
-class View : public QGraphicsView
-{
-public:
-    View(QGraphicsScene *scene) : QGraphicsView(scene) { }
-
-protected:
-    void resizeEvent(QResizeEvent *event) override
-    {
-        QGraphicsView::resizeEvent(event);
-        fitInView(sceneRect(), Qt::KeepAspectRatio);
-    }
-};
+#include "resources.h"
 
 int main(int argc, char **argv)
 {
@@ -99,6 +22,7 @@ int main(int argc, char **argv)
     // Buttons
     QGraphicsItem *buttonParent = new QGraphicsRectItem;
 
+    QList<Button*> buttons;
 
     Button *one = new Button(QPixmap(":/images/1.jpg"), buttonParent);
     Button *two = new Button(QPixmap(":/images/2.jpg"), buttonParent);
@@ -191,7 +115,7 @@ int main(int argc, char **argv)
 
     // Ui
     View *view = new View(&scene);
-    view->setWindowTitle(QT_TRANSLATE_NOOP(QGraphicsView, "Animated Tiles"));
+    view->setWindowTitle(QT_TRANSLATE_NOOP(QGraphicsView, "Sliding Puzzle"));
     view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
     view->setBackgroundBrush(bgPix);
     view->setCacheMode(QGraphicsView::CacheBackground);
