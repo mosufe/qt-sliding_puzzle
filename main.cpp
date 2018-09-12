@@ -2,6 +2,7 @@
 #include <QtCore/qmath.h>
 #include <QtCore/qrandom.h>
 #include <QtCore/qstate.h>
+#include <sstream>
 
 #include "resources.h"
 
@@ -21,52 +22,25 @@ int main(int argc, char **argv)
 
     // Buttons
     QGraphicsItem *buttonParent = new QGraphicsRectItem;
-
     QList<Button*> buttons;
+    for(int i = 1;i <= 16;i++){
+        std::stringstream ss;
+        ss << ":/images/" << i << ".jpg";
+        std::string s = ss.str();
+        const char* file = s.c_str();
+        Button* button =  new Button(QPixmap(file), buttonParent);
+        buttons << button;
+    }
 
-    Button *one = new Button(QPixmap(":/images/1.jpg"), buttonParent);
-    Button *two = new Button(QPixmap(":/images/2.jpg"), buttonParent);
-    Button *three = new Button(QPixmap(":/images/3.jpg"), buttonParent);
-    //Button *four = new Button(QPixmap(":/images/4.jpg"), buttonParent);
-
-    Button *five = new Button(QPixmap(":/images/5.jpg"), buttonParent);
-    Button *six = new Button(QPixmap(":/images/6.jpg"), buttonParent);
-    Button *seven = new Button(QPixmap(":/images/7.jpg"), buttonParent);
-    Button *eight = new Button(QPixmap(":/images/8.jpg"), buttonParent);
-
-    Button *nine = new Button(QPixmap(":/images/9.jpg"), buttonParent);
-    Button *ten = new Button(QPixmap(":/images/10.jpg"), buttonParent);
-    Button *eleven = new Button(QPixmap(":/images/11.jpg"), buttonParent);
-    Button *twelve = new Button(QPixmap(":/images/12.jpg"), buttonParent);
-
-    Button *thirteen = new Button(QPixmap(":/images/13.jpg"), buttonParent);
-    Button *fourteen = new Button(QPixmap(":/images/14.jpg"), buttonParent);
-    Button *fifteen = new Button(QPixmap(":/images/15.jpg"), buttonParent);
-    Button *sixteen = new Button(QPixmap(":/images/16.jpg"), buttonParent);
-
-    //First row
-    one->setPos(-310, -390);
-    two->setPos(-180, -390);
-    three->setPos(-50, -390);
-    //four->setPos(80, -390);
-
-    //Second row
-    five->setPos(-310, -260);
-    six->setPos(-180, -260);
-    seven->setPos(-50, -260);
-    eight->setPos(80, -260);
-
-    //Third row
-    nine->setPos(-310, -130);
-    ten->setPos(-180, -130);
-    eleven->setPos(-50, -130);
-    twelve->setPos(80, -130);
-
-    //Fourth row
-    thirteen->setPos(-310, 0);
-    fourteen->setPos(-180, 0);
-    fifteen->setPos(-50, 0);
-    sixteen->setPos(80, 0);
+    int count = 0;
+    for(int i = 1; i <= 4; i++){
+        int y_pos = -390 + (i-1)*130;
+        for(int k = 1; k <= 4; k++){
+            int x_pos = -310 + (k-1)*130;
+            buttons[count]->setPos(x_pos, y_pos);
+            count++;
+        }
+    }
 
     scene.addItem(buttonParent);
     //Tamanho dos botoes
@@ -81,8 +55,8 @@ int main(int argc, char **argv)
     QState *threeState = new QState(rootState);
     QState *fourState = new QState(rootState);
 
-    oneState->assignProperty(one, "pos", QPointF(-310,-390));
-    twoState->assignProperty(one, "pos", QPointF(-400,-300));
+    oneState->assignProperty(buttons[0], "pos", QPointF(-310,-390));
+    twoState->assignProperty(buttons[0], "pos", QPointF(-400,-300));
 
     // Values
     /*
@@ -129,17 +103,17 @@ int main(int argc, char **argv)
 
     QParallelAnimationGroup *group = new QParallelAnimationGroup;
 
-    QPropertyAnimation *anim = new QPropertyAnimation(one, "pos");
+
+    QPropertyAnimation *anim = new QPropertyAnimation(buttons[0], "pos");
     anim->setDuration(200 + 1 * 25);
     anim->setEasingCurve(QEasingCurve::InOutBack);
     group->addAnimation(anim);
 
     //Define a animacao
-    QAbstractTransition *trans = rootState->addTransition(one, &Button::pressed, oneState);
+    QAbstractTransition *trans = rootState->addTransition(buttons[0], &Button::pressed, oneState);
     trans->addAnimation(group);
-
     //
-    trans = rootState->addTransition(two, &Button::pressed, twoState);
+    trans = rootState->addTransition(buttons[1], &Button::pressed, twoState);
     trans->addAnimation(group);
     QTimer timer;
     timer.start(125);
