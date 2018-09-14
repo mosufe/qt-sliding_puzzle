@@ -1,4 +1,4 @@
-QT += widgets
+QT += widgets core gui
 
 SOURCES = main.cpp \
     button.cpp \
@@ -7,8 +7,7 @@ SOURCES = main.cpp \
 
 RESOURCES = slidingpuzzle.qrc
 # install
-target.path = /home/guilherme/Projects/qt-projects/slidingpuzzle
-INSTALLS += target
+TARGET = app
 
 HEADERS += \
     resources.h

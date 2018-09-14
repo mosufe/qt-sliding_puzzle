@@ -14,13 +14,13 @@ int main(int argc, char **argv)
 
     QPixmap kineticPix(":/images/centered.png");
 
-    //setar background
+    //Setar imagem de background
     QPixmap bgPix(":/images/Time-For-Lunch-2.jpg");
 
-    //localizacao da tela
+    //Localizacao e tamanho da tela
     QGraphicsScene scene(-350, -350, 700, 700);
 
-    // Buttons
+    //Instancia todos os tiles
     QGraphicsItem *buttonParent = new QGraphicsRectItem;
     QList<Button*> buttons;
     for(int i = 1;i <= 16;i++){
@@ -32,60 +32,44 @@ int main(int argc, char **argv)
         buttons << button;
     }
 
+    //Seta posicoes iniciais dos tiles
     int count = 0;
     for(int i = 1; i <= 4; i++){
         int y_pos = -390 + (i-1)*130;
         for(int k = 1; k <= 4; k++){
             int x_pos = -310 + (k-1)*130;
-            buttons[count]->setPos(x_pos, y_pos);
+            buttons.at(count)->setPos(x_pos, y_pos);
             count++;
         }
     }
 
     scene.addItem(buttonParent);
-    //Tamanho dos botoes
+
+    //Seta propriedade dos tiles
     buttonParent->setTransform(QTransform::fromScale(1.2, 1.2), true);
     buttonParent->setPos(200, 200);
     buttonParent->setZValue(1);
 
-    // States
+    // Cria states
     QState *rootState = new QState;
+    QList<QState*> statesList;
+    for(int i = 0;i < 16;i++){
+        QState *state = new QState(rootState);
+        statesList << state;
+    }
+
     QState *oneState = new QState(rootState);
     QState *twoState = new QState(rootState);
-    QState *threeState = new QState(rootState);
-    QState *fourState = new QState(rootState);
+    //QState *threeState = new QState(rootState);
+    //QState *fourState = new QState(rootState);
 
-    oneState->assignProperty(buttons[0], "pos", QPointF(-310,-390));
-    twoState->assignProperty(buttons[0], "pos", QPointF(-400,-300));
+    //Lista de posicoes de cada estado
+    std::list<int> x_states = {-310, -180, -150, 80,-310, -180, -150, 80,-310, -180, -150, 80,-310, -180, -150, 80};
+    std::list<int> y_states = {-390, -390, -390, -390, -260, -260, -260, -260, -130, -130, -130, -130, 0, 0, 0, 0};
 
-    // Values
-    /*
-    for (int i = 0; i < items.count(); ++i) {
-        Pixmap *item = items.at(i);
-        // Ellipse
-        oneState->assignProperty(item, "pos",
-                                         QPointF(qCos((i / 63.0) * 6.28) * 250,
-                                                 qSin((i / 63.0) * 6.28) * 250));
-
-        // Figure 8
-        twoState->assignProperty(item, "pos",
-                                         QPointF(qSin((i / 63.0) * 6.28) * 250,
-                                                 qSin(((i * 2)/63.0) * 6.28) * 250));
-
-        // Random
-        threeState->assignProperty(item, "pos",
-                                        QPointF(-250 + QRandomGenerator::global()->bounded(500),
-                                                -250 + QRandomGenerator::global()->bounded(500)));
-
-        // Tiled
-        fourState->assignProperty(item, "pos",
-                                       QPointF(((i % 8) - 4) * kineticPix.width() + kineticPix.width() / 2,
-                                               ((i / 8) - 4) * kineticPix.height() + kineticPix.height() / 2));
-
-        // Centered
-        centeredState->assignProperty(item, "pos", QPointF());
-    }
-    */
+    //StateChange
+    oneState->assignProperty(buttons.at(0), "pos", QPointF(-310,-390));
+    twoState->assignProperty(buttons.at(0), "pos", QPointF(-400,-300));
 
     // Ui
     View *view = new View(&scene);
@@ -104,16 +88,16 @@ int main(int argc, char **argv)
     QParallelAnimationGroup *group = new QParallelAnimationGroup;
 
 
-    QPropertyAnimation *anim = new QPropertyAnimation(buttons[0], "pos");
+    QPropertyAnimation *anim = new QPropertyAnimation(buttons.at(0), "pos");
     anim->setDuration(200 + 1 * 25);
     anim->setEasingCurve(QEasingCurve::InOutBack);
     group->addAnimation(anim);
 
     //Define a animacao
-    QAbstractTransition *trans = rootState->addTransition(buttons[0], &Button::pressed, oneState);
+    QAbstractTransition *trans = rootState->addTransition(buttons.at(0), &Button::pressed, oneState);
     trans->addAnimation(group);
     //
-    trans = rootState->addTransition(buttons[1], &Button::pressed, twoState);
+    trans = rootState->addTransition(buttons.at(1), &Button::pressed, twoState);
     trans->addAnimation(group);
     QTimer timer;
     timer.start(125);
