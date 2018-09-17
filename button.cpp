@@ -28,7 +28,8 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 }
 
 void Button::mousePressEvent(QGraphicsSceneMouseEvent *){
-    emit pressed();
+    //Aqui deve ser emitido o sinal para a nova pos
+    emit pressed(80,-390);
     update();
 }
 

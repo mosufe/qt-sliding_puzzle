@@ -20,6 +20,14 @@ int main(int argc, char **argv)
     //Localizacao e tamanho da tela
     QGraphicsScene scene(-350, -350, 700, 700);
 
+    View *view = new View(&scene);
+    view->setWindowTitle(QT_TRANSLATE_NOOP(QGraphicsView, "Sliding Puzzle"));
+    view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    view->setBackgroundBrush(bgPix);
+    view->setCacheMode(QGraphicsView::CacheBackground);
+    view->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    view->show();
+
     //Instancia todos os tiles
     QGraphicsItem *buttonParent = new QGraphicsRectItem;
     QList<Button*> buttons;
@@ -42,7 +50,8 @@ int main(int argc, char **argv)
             count++;
         }
     }
-
+    buttons.at(3)->hide();
+    
     scene.addItem(buttonParent);
 
     //Seta propriedade dos tiles
@@ -50,60 +59,41 @@ int main(int argc, char **argv)
     buttonParent->setPos(200, 200);
     buttonParent->setZValue(1);
 
-    // Cria states
+    // Cria 16 estados
     QState *rootState = new QState;
     QList<QState*> statesList;
     for(int i = 0;i < 16;i++){
         QState *state = new QState(rootState);
         statesList << state;
     }
-
-    QState *oneState = new QState(rootState);
-    QState *twoState = new QState(rootState);
-    //QState *threeState = new QState(rootState);
-    //QState *fourState = new QState(rootState);
-
-    //Lista de posicoes de cada estado
-    std::list<int> x_states = {-310, -180, -150, 80,-310, -180, -150, 80,-310, -180, -150, 80,-310, -180, -150, 80};
-    std::list<int> y_states = {-390, -390, -390, -390, -260, -260, -260, -260, -130, -130, -130, -130, 0, 0, 0, 0};
+    State *st = new State(rootState, buttons.at(2), -50, -390);
 
     //StateChange
-    oneState->assignProperty(buttons.at(0), "pos", QPointF(-310,-390));
-    twoState->assignProperty(buttons.at(0), "pos", QPointF(-400,-300));
-
-    // Ui
-    View *view = new View(&scene);
-    view->setWindowTitle(QT_TRANSLATE_NOOP(QGraphicsView, "Sliding Puzzle"));
-    view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    view->setBackgroundBrush(bgPix);
-    view->setCacheMode(QGraphicsView::CacheBackground);
-    view->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    view->show();
-
+    //Botao a ser movido, Parametro a ser modificado, Posicao final do botao
     QStateMachine states;
     states.addState(rootState);
     states.setInitialState(rootState);
-    rootState->setInitialState(oneState);
+    rootState->setInitialState(st);
 
     QParallelAnimationGroup *group = new QParallelAnimationGroup;
 
-
-    QPropertyAnimation *anim = new QPropertyAnimation(buttons.at(0), "pos");
-    anim->setDuration(200 + 1 * 25);
-    anim->setEasingCurve(QEasingCurve::InOutBack);
-    group->addAnimation(anim);
+    for (int i = 0; i < 3; ++i) {
+        QPropertyAnimation *anim = new QPropertyAnimation(buttons.at(i), "pos");
+        anim->setDuration(200 + 1 * 25);
+        anim->setEasingCurve(QEasingCurve::InOutBack);
+        group->addAnimation(anim);
+    }
 
     //Define a animacao
-    QAbstractTransition *trans = rootState->addTransition(buttons.at(0), &Button::pressed, oneState);
+    QObject::connect(buttons.at(2), SIGNAL(pressed(int,int)),st, SLOT(TileMoved(int,int)));
+    QAbstractTransition *trans = rootState->addTransition(buttons.at(2), &Button::pressed, st);
     trans->addAnimation(group);
-    //
-    trans = rootState->addTransition(buttons.at(1), &Button::pressed, twoState);
-    trans->addAnimation(group);
+    
     QTimer timer;
     timer.start(125);
     timer.setSingleShot(true);
-    trans = rootState->addTransition(&timer, &QTimer::timeout, oneState);
-    trans->addAnimation(group);
+    //trans = rootState->addTransition(&timer, &QTimer::timeout, statesList.at(0));
+    //trans->addAnimation(group);
 
     states.start();
 
@@ -112,5 +102,3 @@ int main(int argc, char **argv)
 #endif
     return app.exec();
 }
-
-#include "main.moc"
