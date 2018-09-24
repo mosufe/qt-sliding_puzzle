@@ -2,6 +2,7 @@
 #include <QtCore/qmath.h>
 #include <QtCore/qrandom.h>
 #include <QtCore/qstate.h>
+#include <QObject>
 
 #ifndef RESOURCES_H
 #define RESOURCES_H
@@ -54,6 +55,8 @@ private:
 
 class State : public QState{
     Q_OBJECT
+
+private:
     int pos = 0;
     int position;
     int x_coord;
@@ -69,5 +72,31 @@ public slots:
     void TileMoved(int new_x, int new_y);
 
 };
+
+//Jogo
+//============================================================
+struct coords{
+    int x;
+    int y;
+};
+
+class game{
+
+private:
+    int posicoes [4][4];
+    int sentinela; //posicao relativa ao espaco em branco no quebra cabeca
+
+public:
+    game(int blank);
+    char* canMove(int number);
+    void shuffle();
+    bool estaCompleto (int matriz [4][4]);
+    void trocarDois(int matriz [4][4], int linA, int colA, int linB, int colB);
+    void houveTroca(int peca1, int peca2);
+    int getSentinel();
+    void printMatrix();
+    coords findPosition(int number);
+};
+
 
 #endif // RESOURCES_H
