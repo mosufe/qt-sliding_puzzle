@@ -5,13 +5,17 @@
 #include <unordered_set>
 
 
-game::game(int blank)
+Game::Game(int blank)
 {
-    sentinela = blank;
+    this->posicoes = new int*[4];
+    for(int i =0;i < 4;i++)
+        posicoes[i] = new int[4];
+
+    this->sentinela = blank;
     shuffle();
 }
 
-char* game::canMove(int number){
+char const *Game::canMove(int number){
     coords r = findPosition(number);
     int linha = r.x;
     int coluna = r.y;
@@ -36,14 +40,14 @@ char* game::canMove(int number){
 }
 
 
-void game::trocarDois(int matriz [4][4], int linA, int colA, int linB, int colB){
+void Game::trocarDois(int matriz [4][4], int linA, int colA, int linB, int colB){
     int temp = matriz [linA][colA];
     matriz [linA][colA] = matriz [linB][colB];
     matriz [linB][colB] = temp;
 }
 
 
-void game::shuffle(){
+void Game::shuffle(){
     srand(time(NULL));
     std::unordered_set<int> numbers;
     int aux_vec[15];
@@ -54,7 +58,6 @@ void game::shuffle(){
 
     int i = 0;
     for (const int &number : numbers){
-        printf("%i\n", number);
         aux_vec[i] = number;
         i++;
     }
@@ -66,10 +69,9 @@ void game::shuffle(){
             k++;
         }
     }
-
 }
 
-bool game::estaCompleto (int matriz [4][4]){
+bool Game::estaCompleto (int matriz [4][4]){
     //adaptar ao espaco vazio na quarta posicao
     //trocarDois(matriz, 0, 3, 3, 3);
 
@@ -88,7 +90,7 @@ bool game::estaCompleto (int matriz [4][4]){
     return true;
 }
 
-coords game::findPosition(int number){
+coords Game::findPosition(int number){
     struct coords r;
     for(int i = 0;i < 4;i++)
         for(int j = 0;j < 4;j++)
@@ -99,15 +101,10 @@ coords game::findPosition(int number){
             }
 }
 
-int game::getSentinel() {
+int Game::getSentinel() {
    return this->sentinela;
 }
 
-void game::printMatrix() {
-   for (int i=0; i<4; i++){
-        for (int j=0; j<4; j++){
-            printf("%i ",this->posicoes [i][j]);
-        }
-        printf("\n");
-    }
+int** Game::getMatrix() {
+  return this->posicoes;
 }

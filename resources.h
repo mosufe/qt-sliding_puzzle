@@ -40,7 +40,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *) override;
 
 signals:
-    void pressed(int x, int y);
+    void pressed();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *) override;
@@ -50,53 +50,60 @@ private:
     int state = 1;
     QPixmap _pix;
 };
-//Button
-//============================================================
 
-class State : public QState{
-    Q_OBJECT
-
-private:
-    int pos = 0;
-    int position;
-    int x_coord;
-    int y_coord;
-    Button *btn;
-
-public:
-    State(QState *rootstate, Button *btn,int x_coord, int y_coord);
-    int get_x();
-    int get_y();
-
-public slots:
-    void TileMoved(int new_x, int new_y);
-
-};
-
-//Jogo
+//Game
 //============================================================
 struct coords{
     int x;
     int y;
 };
 
-class game{
+class Game{
 
 private:
-    int posicoes [4][4];
+    int** posicoes;
     int sentinela; //posicao relativa ao espaco em branco no quebra cabeca
 
 public:
-    game(int blank);
-    char* canMove(int number);
+    Game(int blank);
+    char const *canMove(int number);
     void shuffle();
     bool estaCompleto (int matriz [4][4]);
     void trocarDois(int matriz [4][4], int linA, int colA, int linB, int colB);
     void houveTroca(int peca1, int peca2);
     int getSentinel();
-    void printMatrix();
+    int** getMatrix();
     coords findPosition(int number);
 };
 
+//State
+//============================================================
+
+class State : public QState{
+    Q_OBJECT
+
+private:
+    int pos;
+    int position;
+    int x_coord;
+    int y_coord;
+    Button *btn;
+    Game *game;
+
+public:
+    State(Game *game, QState *rootstate);
+    State(Game *game, QState *rootstate, Button *btn, int x_coord, int y_coord, int pos);
+    int get_x();
+    int get_y();
+    int get_pos();
+    void set_x(int new_x);
+    void set_y(int new_y);
+    void set_btn(Button *new_btn);
+    void set_pos(int new_pos);
+
+public slots:
+    void TileMoved();
+
+};
 
 #endif // RESOURCES_H
