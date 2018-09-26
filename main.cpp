@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     //Instancia todos os tiles
     QGraphicsItem *buttonParent = new QGraphicsRectItem;
     QList<Button*> buttons;
-    for(int i = 1;i <= 16;i++){
+    for(int i = 1;i <= 17;i++){
         std::stringstream ss;
         ss << ":/images/" << i << ".jpg";
         std::string s = ss.str();
@@ -45,20 +45,31 @@ int main(int argc, char **argv)
 
     QState *rootState = new QState;
     QList<State*> statesList;
+    for(int i = 0;i < 16;i++){
+        State *s = new State(game, rootState, buttons.at(16),0, 0, 0);
+        statesList << s;
+    }
 
     int count = 0;
     for(int i = 1; i <= 4; i++){
         int y_pos = -390 + (i-1)*130;
         for(int k = 1; k <= 4; k++){
             int x_pos = -310 + (k-1)*130;
+            //printf("Botao %i = recebe posicao %i %i\n",pos[i-1][k-1]-1, x_pos, y_pos );
             buttons.at(pos[i-1][k-1]-1)->setPos(x_pos, y_pos);
-            printf("%i", pos[i-1][k-1]-1);
-            State *state = new State(game, rootState, buttons.at(pos[i-1][k-1]-1), x_pos, y_pos, pos[i-1][k-1]);
-            statesList << state;
+            statesList.at(pos[i-1][k-1]-1)->set_x(x_pos);
+            statesList.at(pos[i-1][k-1]-1)->set_y(y_pos);
+            statesList.at(pos[i-1][k-1]-1)->set_btn(buttons.at(pos[i-1][k-1]-1));
+            statesList.at(pos[i-1][k-1]-1)->set_pos(pos[i-1][k-1]);
+            printf("Estado = %i = tem posicao %i %i\n",pos[i-1][k-1]-1, statesList.at(pos[i-1][k-1]-1)->get_x(), statesList.at(pos[i-1][k-1]-1)->get_y());
+            //printf("%i", pos[i-1][k-1]-1);
+           //State *state = new State(game, rootState, buttons.at(pos[i-1][k-1]-1), x_pos, y_pos, pos[i-1][k-1]);
+           //statesList << state;
             count++;
         }
     }
     buttons.at(3)->hide();
+    buttons.at(16)->hide();
     
     scene.addItem(buttonParent);
 

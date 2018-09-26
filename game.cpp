@@ -40,10 +40,12 @@ char const *Game::canMove(int number){
 }
 
 
-void Game::trocarDois(int matriz [4][4], int linA, int colA, int linB, int colB){
-    int temp = matriz [linA][colA];
-    matriz [linA][colA] = matriz [linB][colB];
-    matriz [linB][colB] = temp;
+void Game::swapTiles(int tile){
+    coords gap = findPosition(this->sentinela);
+    coords piece = findPosition(tile);
+
+    this->posicoes[gap.x][gap.y] = tile;
+    this->posicoes[piece.x][piece.y] = this->sentinela;
 }
 
 

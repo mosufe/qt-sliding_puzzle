@@ -1,10 +1,11 @@
 #include "resources.h"
 
-State::State(Game *game, QState *rootstate) : QState(rootstate){
-    this->btn = btn;
-    this->game = game;
-    this->assignProperty(btn, "pos", QPointF(x_coord, y_coord));
-}
+//State::State(Game *game, QState *rootstate) : QState(rootstate){
+//    this->btn = btn;
+//    this->game = game;
+//    this->assignProperty(btn, "pos", QPointF(x_coord, y_coord));
+//}
+
 
 State::State(Game *game, QState *rootstate, Button *btn, int x_coord, int y_coord, int pos) : QState(rootstate){
     this->pos = pos;
@@ -17,10 +18,12 @@ State::State(Game *game, QState *rootstate, Button *btn, int x_coord, int y_coor
 
 void State::set_x(int new_x){
     this->x_coord = new_x;
+    this->assignProperty(btn, "pos", QPointF(this->x_coord, this->y_coord));
 }
 
 void State::set_y(int new_y){
     this->y_coord = new_y;
+    this->assignProperty(btn, "pos", QPointF(this->x_coord, this->y_coord));
 }
 
 void State::set_btn(Button *new_btn){
@@ -48,6 +51,7 @@ void State::TileMoved(){
 
     int** temp = game->getMatrix();
 
+/*
      printf("\n%i ", temp[0][0]);
      printf("%i ", temp[0][1]);
      printf("%i ", temp[0][2]);
@@ -67,27 +71,28 @@ void State::TileMoved(){
      printf("%i ", temp[3][1]);
      printf("%i ", temp[3][2]);
      printf("%i\n", temp[3][3]);
-
+*/
 
     const char* direction = game->canMove(this->pos);
-    printf("====%i=====", this->pos);
-    printf("%s\n",direction);
 
-    if (strcmp(direction, "up")){
-        printf("ENTREI");
-        this->y_coord = this->y_coord +130;
+    if (strcmp(direction, "up") == 0){
+        this->y_coord = this->y_coord -130;
+        game->swapTiles(this->pos);
         this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
-     }
-
-    /*
-    else if (strcmp(direction,"down"))
+    }
+    else if (strcmp(direction,"down") == 0){
         this->y_coord = this->y_coord +130;
-    else if (strcmp(direction,"left"))
+        game->swapTiles(this->pos);
+        this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
+    }
+    else if (strcmp(direction,"left") == 0){
         this->x_coord = this->x_coord -130;
-    else if (strcmp(direction,"right"))
+        game->swapTiles(this->pos);
+        this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
+    }
+    else if (strcmp(direction,"right") == 0){
         this->x_coord = this->x_coord +130;
-
-    printf("%s\n",direction);
-    this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
-    */
+        game->swapTiles(this->pos);
+        this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
+    }
 }

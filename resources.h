@@ -69,7 +69,7 @@ public:
     char const *canMove(int number);
     void shuffle();
     bool estaCompleto (int matriz [4][4]);
-    void trocarDois(int matriz [4][4], int linA, int colA, int linB, int colB);
+    void swapTiles(int tile);
     void houveTroca(int peca1, int peca2);
     int getSentinel();
     int** getMatrix();
@@ -91,7 +91,7 @@ private:
     Game *game;
 
 public:
-    State(Game *game, QState *rootstate);
+    //State(Game *game, QState *rootstate);
     State(Game *game, QState *rootstate, Button *btn, int x_coord, int y_coord, int pos);
     int get_x();
     int get_y();
