@@ -28,29 +28,29 @@ int main(int argc, char **argv)
     view->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     view->show();
 
+    QLabel *movementsLabel = new QLabel("Jogadas");
+    movementsLabel->resize(60,20);
+    movementsLabel->move(-150, 300);
+    movementsLabel->setAlignment(Qt::AlignCenter);
+
     QLCDNumber *score;
     score = new QLCDNumber(3);
     score->display(0);
     score->setSegmentStyle(QLCDNumber::Filled);
-    score->move(-270,320);
+    score->move(-160,320);
     score->resize(80,50);
     score->show();
 
-    DigitalTimer *t;
-    t = new DigitalTimer(5);
-    t->move(155,320);
-    t->resize(160,50);
-    t->show();
-
-    QLabel *movementsLabel = new QLabel("Jogadas");
-    movementsLabel->resize(60,20);
-    movementsLabel->move(-260, 300);
-    movementsLabel->setAlignment(Qt::AlignCenter);
-
     QLabel *timeLabel = new QLabel("Tempo");
     timeLabel->resize(60,20);
-    timeLabel->move(205, 300);
+    timeLabel->move(85, 300);
     timeLabel->setAlignment(Qt::AlignCenter);
+
+    DigitalTimer *t;
+    t = new DigitalTimer(5);
+    t->move(40,320);
+    t->resize(160,50);
+    t->show();
 
     //Instancia todos os tiles
     QGraphicsItem *buttonParent = new QGraphicsRectItem;
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
         group->addAnimation(anim);
     }
 
-
+    QObject::connect(game, SIGNAL(gameCompleted()), t, SLOT(stopTimer()));
     QList<QAbstractTransition*> transformationList;
     for(int i = 0;i < 16;i++){
         QObject::connect(statesList.at(i), SIGNAL(movementCountChanged(int)), score, SLOT(display(int)));

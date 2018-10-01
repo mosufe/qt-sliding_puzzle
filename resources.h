@@ -81,6 +81,9 @@ public:
     coords findPosition(int number);
     char const *canMove(int number);
 
+signals:
+    void gameCompleted();
+
 public slots:
     void IncrementMovement();
 };
@@ -121,12 +124,14 @@ public slots:
 class DigitalTimer : public QLCDNumber{
     Q_OBJECT
     QTime time;
+    QTimer *timer;
 
 public:
     DigitalTimer(uint digits);
 
 private slots:
     void showTime();
+    void stopTimer();
 };
 
 #endif // RESOURCES_H

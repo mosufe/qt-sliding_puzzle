@@ -11,10 +11,10 @@ Game::Game(int blank)
     this->sentinela = blank;
     this->movements = 0;
 
-    shuffle();
-    while(isSolvable() == 0)
-        shuffle();
-    //semiSolved();
+    //shuffle();
+    //while(isSolvable() == 0)
+        //shuffle();
+    semiSolved();
 }
 
 void Game::startSolvedGame(){
@@ -99,6 +99,7 @@ bool Game::isComplete (){
             pecaSequencial++;
         }
     }
+    emit gameCompleted();
     return true;
 }
 
@@ -145,5 +146,4 @@ int Game::getMovements() {
 
 void Game::IncrementMovement(){
     this->movements = this->movements + 1;
-    printf("%i", this->movements);
 }
