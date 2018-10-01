@@ -5,7 +5,8 @@ SOURCES = main.cpp \
     pixmap.cpp \
     view.cpp \
     state.cpp \
-    game.cpp
+    game.cpp \
+    digitaltimer.cpp
 
 RESOURCES = slidingpuzzle.qrc
 # install

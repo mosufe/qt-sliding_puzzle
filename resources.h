@@ -58,22 +58,31 @@ struct coords{
     int y;
 };
 
-class Game{
+class Game : public QObject{
+    Q_OBJECT
 
 private:
     int** posicoes;
     int sentinela; //posicao relativa ao espaco em branco no quebra cabeca
+    int movements;
 
 public:
     Game(int blank);
-    char const *canMove(int number);
-    void shuffle();
-    bool estaCompleto (int matriz [4][4]);
-    void swapTiles(int tile);
-    void houveTroca(int peca1, int peca2);
+    int getMovements();
     int getSentinel();
     int** getMatrix();
+    bool isComplete();
+    bool isSolvable();
+    void shuffle();
+    void semiSolved();
+    void startSolvedGame();
+    void swapTiles(int tile);
+    void houveTroca(int peca1, int peca2);
     coords findPosition(int number);
+    char const *canMove(int number);
+
+public slots:
+    void IncrementMovement();
 };
 
 //State
@@ -101,9 +110,23 @@ public:
     void set_btn(Button *new_btn);
     void set_pos(int new_pos);
 
+signals:
+    void movementCountChanged(int);
 public slots:
     void TileMoved();
+};
 
+//Clock
+//=================================================================================
+class DigitalTimer : public QLCDNumber{
+    Q_OBJECT
+    QTime time;
+
+public:
+    DigitalTimer(uint digits);
+
+private slots:
+    void showTime();
 };
 
 #endif // RESOURCES_H
