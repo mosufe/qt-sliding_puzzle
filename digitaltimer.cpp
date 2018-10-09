@@ -20,4 +20,9 @@ void DigitalTimer::showTime()
 
 void DigitalTimer::stopTimer(){
     timer->stop();
+    emit getTime(this->time);
+}
+
+QTime DigitalTimer::getFinalTime(){
+    return this->time;
 }

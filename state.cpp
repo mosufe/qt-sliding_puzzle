@@ -46,28 +46,34 @@ void State::TileMoved(){
         game->swapTiles(this->pos); 
         this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
         emit movementCountChanged(game->getMovements());
-        if(game->isComplete());
-
+        if(game->isComplete())
+            Input *i = new Input();
     }
     else if (strcmp(direction,"down") == 0){
         this->y_coord = this->y_coord + 130;
         game->swapTiles(this->pos);
         this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
         emit movementCountChanged(game->getMovements());
-        if(game->isComplete());
+        if(game->isComplete()){
+            Input *i = new Input();
+        }
     }
     else if (strcmp(direction,"left") == 0){
         this->x_coord = this->x_coord - 130;
         game->swapTiles(this->pos);
         this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
         emit movementCountChanged(game->getMovements());
-        if(game->isComplete());
+        if(game->isComplete()){
+            Input *i = new Input();
+        }
     }
     else if (strcmp(direction,"right") == 0){
         this->x_coord = this->x_coord + 130;
         game->swapTiles(this->pos);
         this->assignProperty(this->btn, "pos" ,QPointF(this->x_coord, this->y_coord));
         emit movementCountChanged(game->getMovements());
-        if(game->isComplete());
+        if(game->isComplete()){
+           Input *i = new Input();
+        }
     }
 }

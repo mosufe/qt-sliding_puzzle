@@ -1,5 +1,6 @@
 #include "resources.h"
 
+
 Button::Button(const QPixmap &pixmap, QGraphicsItem *parent = 0): QGraphicsWidget(parent), _pix(pixmap){
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
@@ -19,8 +20,6 @@ QPainterPath Button::shape() const{
 void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *){
     bool down = option->state & QStyle::State_Sunken;
     QRectF r = boundingRect();
-
-    //Tipo de desenho
     painter->drawRect(r);
     if (down)
         painter->translate(2, 2);
@@ -28,7 +27,6 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 }
 
 void Button::mousePressEvent(QGraphicsSceneMouseEvent *){
-    //Aqui deve ser emitido o sinal para a nova pos
     emit pressed();
     update();
 }

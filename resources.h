@@ -8,6 +8,7 @@
 #define RESOURCES_H
 
 //Pixmap
+//Define a imagem a ser associada ao botão
 //============================================================
 class Pixmap : public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
@@ -18,6 +19,7 @@ public:
 };
 
 //View
+//Define a classe de visualização básica do jogo
 //============================================================
 class View : public QGraphicsView{
 
@@ -29,6 +31,7 @@ protected:
 };
 
 //Button
+//Cria uma classe botão a partir de um QGraphics Widget para facilitar implementação
 //============================================================
 class Button : public QGraphicsWidget{
     Q_OBJECT
@@ -52,6 +55,7 @@ private:
 };
 
 //Game
+//Classe que define as regras de jogo e suas respectivas funcionalidades
 //============================================================
 struct coords{
     int x;
@@ -65,6 +69,7 @@ private:
     int** posicoes;
     int sentinela; //posicao relativa ao espaco em branco no quebra cabeca
     int movements;
+    QTime finalTime;
 
 public:
     Game(int blank);
@@ -77,18 +82,21 @@ public:
     void semiSolved();
     void startSolvedGame();
     void swapTiles(int tile);
-    void houveTroca(int peca1, int peca2);
     coords findPosition(int number);
     char const *canMove(int number);
+    QTime getFinalTime();
 
 signals:
-    void gameCompleted();
+    void gameCompleted(int);
 
 public slots:
     void IncrementMovement();
+    void updateTime(QTime time);
 };
 
 //State
+//Classe de estados que define o estado atual de cada botão
+//Extende a classe base QState permitindo criação de novos campos e métodos
 //============================================================
 
 class State : public QState{
@@ -103,7 +111,6 @@ private:
     Game *game;
 
 public:
-    //State(Game *game, QState *rootstate);
     State(Game *game, QState *rootstate, Button *btn, int x_coord, int y_coord, int pos);
     int get_x();
     int get_y();
@@ -120,6 +127,7 @@ public slots:
 };
 
 //Clock
+//Define a classe de temporizador
 //=================================================================================
 class DigitalTimer : public QLCDNumber{
     Q_OBJECT
@@ -128,10 +136,49 @@ class DigitalTimer : public QLCDNumber{
 
 public:
     DigitalTimer(uint digits);
+    QTime getFinalTime();
+
+signals:
+    void getTime(QTime);
 
 private slots:
     void showTime();
     void stopTimer();
 };
 
+//Input
+//Define a tela de insercao para o nome da pessoa
+//=================================================================================
+class Input : public QObject{
+
+   Q_OBJECT
+   QString text;
+public:
+    Input();
+};
+
+//RecordWindow
+//Define a janela de pontuação
+//=================================================================================
+class RecordWindow : public QObject{
+    Q_OBJECT
+
+public:
+    struct score{
+        QString name;
+        float time;
+        int moves;
+    };
+
+    score scoreList [20];
+
+    QWidget recordWindow;
+
+    void resetList ();
+    void writeFile ();
+    void readFile ();
+
+public slots:
+    void createWindow(int jogadas);
+};
 #endif // RESOURCES_H

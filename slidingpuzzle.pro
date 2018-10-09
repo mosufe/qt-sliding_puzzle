@@ -6,7 +6,9 @@ SOURCES = main.cpp \
     view.cpp \
     state.cpp \
     game.cpp \
-    digitaltimer.cpp
+    digitaltimer.cpp \
+    input.cpp \
+    recordwindow.cpp
 
 RESOURCES = slidingpuzzle.qrc
 # install

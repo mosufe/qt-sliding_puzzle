@@ -11,10 +11,10 @@ Game::Game(int blank)
     this->sentinela = blank;
     this->movements = 0;
 
-    //shuffle();
-    //while(isSolvable() == 0)
-        //shuffle();
-    semiSolved();
+    shuffle();
+    while(isSolvable() == 0)
+        shuffle();
+    //semiSolved();
 }
 
 void Game::startSolvedGame(){
@@ -99,7 +99,7 @@ bool Game::isComplete (){
             pecaSequencial++;
         }
     }
-    emit gameCompleted();
+    emit gameCompleted(this->movements);
     return true;
 }
 
@@ -146,4 +146,12 @@ int Game::getMovements() {
 
 void Game::IncrementMovement(){
     this->movements = this->movements + 1;
+}
+
+void Game::updateTime(QTime time){
+    this->finalTime = time;
+}
+
+QTime Game::getFinalTime(){
+    return this->finalTime;
 }
